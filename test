@@ -1,0 +1,10 @@
+#!/bin/bash
+vals=':mnt/var/lib/vmware/Virtual:Machines /dev /proc /sys /tmp /usr/portage /var/tmp'
+IFS=":| "
+for i in $vals
+
+do
+
+	echo $i 
+
+done

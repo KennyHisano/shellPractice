@@ -1,0 +1,57 @@
+#!/bin/sh
+
+FINDALL=false
+
+#check argument first.
+case "$1" in
+  
+  -a)
+        FINDALL=true
+        shift
+        ;;
+esac
+
+
+while [ $# -gt 0 ]
+do
+    file=$1
+    found=false
+    # Now check if file starts with /
+    case "$file" in
+        /*)
+            if [ -x $file ]
+            then
+                echo $file
+            fi
+            ;;
+        *)
+            # $1 is a file to search in $PATH
+            IFS=:
+            for dir in $PATH:
+            do
+              if [ -z "$dir" ]
+              then
+                dir="."
+              fi
+
+              # Check if the file is executable and in the $dir
+              if [ -x "$dir/$file" ]
+              then
+                  echo "$dir/$file"
+                  found=true
+                  if [ "$switch_a" != true ]
+                  then
+                    # Exit after first match if no "-a" flag
+                    break
+                  fi
+              fi
+            done
+            ;;
+    esac
+    if [ "$found" = "false" ]
+    then
+      echo $file not found
+    fi
+    shift
+done
+

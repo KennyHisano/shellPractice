@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if [ "$1" = "" ]
+then
+    echo usage: $0 list ...
+    exit
+fi
+
+result=""
+while [ "$1" != "" ]
+do
+    IFS=":| "
+    for elem in $1:
+    do
+        if [ "$elem" = "" ]
+        then
+            elem="."
+        fi
+        # Try to find "elem" in result
+        case "$result" in
+            $elem|$elem:*|*:$elem:*|*:$elem)
+                ;; # do nothing
+            "") # first element
+                result="$elem"
+                ;;
+            *)
+                result="$result:$elem"
+                ;;
+        esac
+    done
+    IFS=" "
+    shift
+done
+echo $result
