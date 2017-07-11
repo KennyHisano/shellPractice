@@ -1,0 +1,36 @@
+#!/bin/sh
+
+
+if [ "$1" = "" ]
+then
+    echo "usage: $0 list ..."
+    exit
+fi
+
+NP=""
+while [ "$1" != "" ]
+do
+    IFS=":| "
+    for sep in $1:
+    do
+        if [ "$sep" = "" ]
+        then
+            sep="."
+        fi
+
+        case "$NP" in
+            # there are threecases of sepalation. 
+            $sep|$sep:*|*:$sep:*|*:$sep)
+                ;; # do nothing
+            "") 
+                NP="$sep"
+                ;;
+            *)
+                NP="$NP:$sep"
+                ;;
+        esac
+    done
+    IFS=" "
+    shift
+done
+echo $NP

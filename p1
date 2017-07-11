@@ -1,0 +1,59 @@
+#!/bin/bash
+
+FINDALL=false
+
+
+
+#-a for switch
+case "$1" in
+  
+  -a)
+        FINDALL=true
+        shift
+        ;;
+esac
+
+
+
+
+while [ $# -gt 0 ]
+do
+    file=$1
+    found=false
+    # / filter
+    case "$file" in
+        /*)
+            if [ -x $file ]
+            then
+                echo $file
+            fi
+            ;;
+        *)
+        
+            IFS=:
+            for dir in $PATH:
+            do
+              if [ -z "$dir" ]
+              then
+                dir="."
+              elif [ -x "$dir/$file" ]
+              then
+                  echo "$dir/$file"
+                  found=true
+                  if [ "$FINDALL" != true ]
+                  then
+                    # Exit after first match if no "-a" flag
+                    break
+                    #exit 1
+                  fi
+              fi
+            done
+            ;;
+    esac
+    if [ "$found" = "false" ]
+    then
+      echo $file not found
+    fi
+    shift
+done
+
