@@ -1,9 +1,12 @@
 #!/bin/ksh
+myname=
+fullname=
 
 if [ "$1" = "" ]
 then
   echo "error: no users are listed"
 fi
+
 
 
 
@@ -13,7 +16,7 @@ then
    exit 
 fi
 
-myname=`ypcat passwd | grep ^$USER | awk -F : '{print $1}'`
+myname=`ypcat passwd | grep ^$USER| awk -F : '{print $1}'`
 echo "$myname"
 for recpt in $@
 do
@@ -23,21 +26,23 @@ do
         continue
     fi
     who | cut -d' ' -f1 | grep "^$recpt\$" >/dev/null
-
+    # if user logged in, grep returns 0
     if [ $? -eq 0 ]
     then
-        fullname=`ypcat passwd | grep ^$USER | awk -F : '{print $4}'`
-
+        fullname=`ypcat passwd | grep ^$recpt | awk -F : '{print $5}'`
+        echo "$fullname"
         mail -s "Assigtnment 4" $recpt <<EOF
 
-**** This email is automatically generatated by khisa880 ******
+Hello $fullname
+
+**** This email is automatically generatated by $fullname  ******
 
 My instructor requires that I send this message as part of an assignment for class 92.312.
 The current time and date is `date`.
 
 Have a nice day.
 
-"Kentaro Hisano"
+"${myname}"
 
 EOF
     fi

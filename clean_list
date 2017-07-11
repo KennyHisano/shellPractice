@@ -2,7 +2,7 @@
 
 if [ "$1" = "" ]
 then
-    echo usage: $0 list ...
+    echo "usage: $0 list ..."
     exit
 fi
 
@@ -10,21 +10,21 @@ result=""
 while [ "$1" != "" ]
 do
     IFS=":| "
-    for elem in $1:
+    for sep in $1:
     do
-        if [ "$elem" = "" ]
+        if [ "$sep" = "" ]
         then
-            elem="."
+            sep="."
         fi
-        # Try to find "elem" in result
+
         case "$result" in
-            $elem|$elem:*|*:$elem:*|*:$elem)
+            $sep|$sep:*|*:$sep:*|*:$sep)
                 ;; # do nothing
-            "") # first element
-                result="$elem"
+            "") 
+                result="$sep"
                 ;;
             *)
-                result="$result:$elem"
+                result="$result:$sep"
                 ;;
         esac
     done
