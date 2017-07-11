@@ -1,10 +1,11 @@
-#!/bin/bash
-# Write a mail message to listed users if they are online
+#!/bin/ksh
+
 if [ "$1" = "" ]
 then
-  echo "error: no users specified"
-  echo "usage: $0 user ..."
+  echo "error: no users are listed"
 fi
+
+
 
 if ! grep -q ^$USER: /etc/passwd
 then
@@ -13,6 +14,7 @@ then
 fi
 
 myname=`grep ^$USER: /etc/passwd | cut -d: -f5`
+echo "$myname"
 for recpt in $@
 do
     if ! grep -q ^$recpt: /etc/passwd
@@ -25,8 +27,21 @@ do
     if [ $? -eq 0 ]
     then
         fullname=`grep ^$recpt: /etc/passwd | cut -d: -f5`
-        mail -s "Hello message" $recpt <<EOF
+
+        mail -s "Assigtnment 4" $recpt <<EOF
+
+**** This email is automatically generatated by $fullname  ******
+
+My instructor requires that I send this message as part of an assignment for class 92.312.
+The current time and date is `date`.
+
+Have a nice day.
+
+$myname
+
+
 Hello "$fullname",
+
 Please ignore this mail. My instructor requires that I send this message as part of an assignment for class 92.312. The current time and date is `date`. 
 Have a nice day.
 

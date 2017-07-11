@@ -24,51 +24,30 @@ basename ()
     {
     # function provided for the student
     print -- "${1##*/}"
-    }`
+    }
 
 find_dirs ()
     {
     # function provided for the student
-    find "$1" -depth -type d -name '* *' -print
+    find "$1" -depth -type d -name "* *" \
+    | my_rename  
+
+    
+
     }
 
 find_files ()
     {
     # function provided for the student
-    find "$1" -depth -type f -name '* *' -print
+    find "$1" -depth -type f -name "* *" \
+    | my_rename
     }
-
+ 
 my_rename()
-    {
-    # the student must implement this function to my_rename
-    # $1 to $2
-    # The following error checking must happen:
-    #	1. check if the directory where $1 resided is writeable, 
-    #      if not then report an error
-    #	2. check if "$2" exists -if it does report and error and don't
-    #      do the mv command
-    #   3. check the status of the mv command and report any errors
-     # remove this line when you implement the function
-    if [ ! -w "$1" ]
-        then 
-        echo "Cannot write to directory." 1>&2
-        exit 1
-    fi
-    if [ ! -f "$2"]
-        then
-        echo "cannot find $2"
-        exit 1 
-    fi
+{ 
+ while IFS= read -r f ; do mv -i "$f" "$(dirname "$f")/$(basename "$f"|tr ' ' -)" ; done
 
-    mv "$1 $2" "$1-$2"
-
-
-
-
-
-
-
-    }
+}
 
 fix_dirs ()
     {
@@ -78,7 +57,10 @@ fix_dirs ()
     # changing all of the spaces to -'s
     # if the name were "a b", the new name would be a-b
     # if the name were "a   b" the new name would be a----b
-    : # remove this line when you implement the function
+     # remove this line when you implement the function
+    find_dirs "$DIR"
+ 
+
 
     }
 
@@ -90,9 +72,18 @@ fix_files ()
     # changing all of the spaces to -'s
     # if the name were "a b", the new name would be a-b
     # if the name were "a   b" the new name would be a----b
-    : # remove this line when you implement the function
-
+    # remove this line when you implement the function
+    find_files "$DIR"
+ 
     }
+
+
+
+
+
+
+
+
 
 WFILE=
 WDIR=
@@ -142,14 +133,46 @@ while [ $# -gt 0 ]
 #   message and exit
 #
 
+dir_check(){
+    if [ ! "$DIR" ]
+        then 
+        echo "error: Please specify a directory."
+        exit 1
+    elif  [ "$DIR" = "." ] || [ "$DIR" = ".." ]
+        then
+        echo "error: Directory name . or .. is not available."
+        exit 1
+
+    elif [ "${PWD#*$DIR}" != "$PWD" ] 
+        then 
+        echo "error: Directory specified is the current directory"
+        exit 1
+    fi
+}
+
+
+
+
+dir_check
+
+
+
 if [ "$WDIR" -a "$WFILE" ]
     then
+    
     fix_files "$DIR"
     fix_dirs "$DIR"
+
+
 elif [ "$WDIR" ]
     then
     fix_dirs "$DIR"
 elif [ "$WFILE" ]
     then
     fix_files "$DIR"
-    fi
+else
+    echo "error: -f or -d is not specified"
+    exit 1
+
+fi
+
