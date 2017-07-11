@@ -45,6 +45,14 @@ find_files ()
  
 my_rename()
 { 
+
+ if [ ! -w $1 ]
+    then 
+    echo "not writtable directory"
+    exit 1
+ fi
+
+
  while IFS= read -r f ; do mv -i "$f" "$(dirname "$f")/$(basename "$f"|tr ' ' -)" ; done
 
 }
